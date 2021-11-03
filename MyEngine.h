@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <collection.h>
+#include "Mesh.h"
 
 using namespace Microsoft::WRL;
 using namespace Windows::UI::Core;
@@ -22,6 +24,8 @@ public:
 	// Shader stuff
 	ComPtr<ID3D11PixelShader> pixelShader;
 	ComPtr<ID3D11VertexShader> vertexShader;
+
+	Platform::Collections::Vector<Mesh^>^ Meshes = ref new Platform::Collections::Vector<Mesh^>();
 
 	unsigned int vertexCount;
 

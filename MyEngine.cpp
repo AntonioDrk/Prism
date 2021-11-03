@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MyEngine.h"
 #include "MyHelperData.h"
+
 #include <fstream>
 
 // Prepares Direct3D for use
@@ -74,6 +75,8 @@ void BasicGameEngine::Initialize()
 
 	devcon->RSSetViewports(1, &viewport);
 
+	Meshes->Append(ref new Mesh());
+
 	// initialize graphics and the pipeline
 	InitGraphics();
 	InitPipeline();
@@ -82,46 +85,7 @@ void BasicGameEngine::Initialize()
 // Loads and initializes all graphics data
 void BasicGameEngine::InitGraphics()
 {
-	VERTEX OurVerticies[] =
-	{
-		{
-			DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.5f, 0.0f, 0.0f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.0f, -0.5f, 0.0f),
-			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.5f, 0.0f, 0.0f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.5f, -0.5f, 0.0f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.0f, -0.5f, 0.0f),
-			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
-		},
-		/*{0.25f, 0.0f, 0.0f},
-		{0.25f, -0.25f, 0.0f},
-		{0.0f, -0.25f, 0.0f},*/
-	};
-
-	vertexCount = 6;
-
-	D3D11_BUFFER_DESC bd = { 0 };
-	bd.ByteWidth = sizeof(VERTEX) * vertexCount;
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-	D3D11_SUBRESOURCE_DATA srd = { OurVerticies, 0, 0 };
-
-	dev->CreateBuffer(&bd, &srd, &vertexBuffer);
+	Meshes->GetAt(0)->Initialize((int)dev.Get());
 }
 
 void BasicGameEngine::Update()
@@ -138,16 +102,18 @@ void BasicGameEngine::Render()
 	float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
 	devcon->ClearRenderTargetView(renderTarget.Get(), color);
 
-	// Set the vertex buffer
-	UINT stride = sizeof(VERTEX);
-	UINT offset = 0;
-	devcon->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+	//// Set the vertex buffer
+	//UINT stride = sizeof(VERTEX);
+	//UINT offset = 0;
+	//devcon->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 
-	// Set the primitive type of topology
-	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//// Set the primitive type of topology
+	//devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	Meshes->GetAt(0)->Render((int)devcon.Get());
 
 	// draw 3 verticies (in our case), starting from vertex 0
-	devcon->Draw(vertexCount, 0);
+	devcon->Draw(Meshes->GetAt(0)->GetIndexCount(), 0);
 
 	// Switch the back buffer and the front buffer
 	swapchain->Present(1, 0);

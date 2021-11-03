@@ -32,16 +32,25 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{b4df546d-e652-4f9a-ba68-6466babf37ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyComponents">
+      <UniqueIdentifier>{6eb2e329-eb6d-44fd-8ead-121038d3b799}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="MyEngine.cpp" />
+    <ClCompile Include="Mesh.cpp">
+      <Filter>MyComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="MyEngine.h" />
     <ClInclude Include="MyHelperData.h" />
+    <ClInclude Include="Mesh.h">
+      <Filter>MyComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
