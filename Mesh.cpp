@@ -1,5 +1,6 @@
 #include <iostream>
 #include "pch.h"
+#include "spdlog/spdlog.h"
 
 using namespace Microsoft::WRL;
 using namespace Platform;
@@ -10,6 +11,48 @@ using namespace Platform;
 /// Loads the vertecies and index data into their arrays to be processed further
 /// </summary>
 bool Mesh::LoadVertexData()
+{
+	return false;
+}
+
+bool Mesh::LoadSimpleTriangleData()
+{
+	m_vertexCount = 3;
+	m_indexCount = 3;
+
+	vertices = new VERTEX[m_vertexCount];
+	indices = new unsigned long[m_indexCount];
+
+	if (!vertices || !indices)
+	{
+		return false;
+	}
+
+	//TODO: Remove this brute force code, load the data from a file instead
+	vertices[0] = {
+			DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f),
+			DirectX::XMFLOAT3(0.3f, 0.5f, 0.0f)
+	};
+
+	vertices[1] = {
+			DirectX::XMFLOAT3(0.95f, 0.0f, 0.0f),
+			DirectX::XMFLOAT3(0.0f, 0.7f, 0.7f)
+	};
+
+	vertices[2] = {
+			DirectX::XMFLOAT3(0.85f, -0.75f, 0.0f),
+			DirectX::XMFLOAT3(0.2f, 0.1f, 0.5f)
+	};
+
+	for (int i = 0; i < 6; i++)
+	{
+		indices[i] = i;
+	}
+
+	return true;
+}
+
+bool Mesh::LoadSimplePlaneData()
 {
 	m_vertexCount = 6;
 	m_indexCount = 6;
@@ -52,7 +95,7 @@ bool Mesh::LoadVertexData()
 			DirectX::XMFLOAT3(0.0f, -0.5f, 0.0f),
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 	};
-	
+
 	for (int i = 0; i < 6; i++)
 	{
 		indices[i] = i;
@@ -61,12 +104,148 @@ bool Mesh::LoadVertexData()
 	return true;
 }
 
-void Mesh::UnloadVertexData()
+bool Mesh::LoadSimpleCubeData()
 {
-	delete [] vertices;
-	delete [] indices;
-	vertices = nullptr;
-	indices = nullptr;
+	m_vertexCount = 24;
+	m_indexCount = 36;
+
+	vertices = new VERTEX[m_vertexCount];
+	indices = new unsigned long[m_indexCount];
+
+	VERTEX cubeData[] =
+	{
+		{
+			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
+		},
+		{
+			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
+		},
+		{
+			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
+		},
+		{
+			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
+		},
+
+		{
+			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+
+		{ 
+			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		  
+
+		{ 
+			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
+		},
+		  
+		{ 
+			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
+		},
+		  
+		{ 
+			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
+		}
+	};
+	
+	std::copy(std::begin(cubeData), std::end(cubeData), vertices);
+	//delete[] cubeData;
+
+	unsigned long cubeIndices [] =
+	{
+		0, 1, 3,
+		3, 1, 2,
+		4, 5, 7,
+		7, 5, 6,
+		8, 9, 11,
+		11, 9, 10,
+		12, 13, 15,
+		15, 13, 14,
+		16, 17, 19,
+		19, 17, 18,
+		20, 21, 23,
+		23, 21, 22
+	};
+
+	std::copy(std::begin(cubeIndices), std::end(cubeIndices), indices);
+	//delete[] cubeIndices;
+
+	if (!vertices || !indices)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 /// <summary>
@@ -74,10 +253,11 @@ void Mesh::UnloadVertexData()
 /// </summary>
 /// <param name="device"></param>
 /// <returns></returns>
-bool Mesh::Initialize(int devAdress)
+bool Mesh::Initialize(__int64 devAdress)
 {
+	spdlog::get("main_file_logger")->info("Initializing mesh");
 	ComPtr<ID3D11Device1> dev = reinterpret_cast<ID3D11Device1*>(devAdress);
-	if (!LoadVertexData())
+	if (!vertices || !indices)
 	{
 		return false;
 	}
@@ -93,7 +273,7 @@ bool Mesh::Initialize(int devAdress)
 	result = dev->CreateBuffer(&bd_vertices, &srd_vertices, &m_vertexBuffer);
 	if (FAILED(result))
 	{
-		std::cout << "Error while trying to initialize Mesh Object: " << result;
+		spdlog::get("main_file_logger")->error("Error while trying to create vertex buffer for Mesh Object");
 		return false;
 	}
 
@@ -105,11 +285,10 @@ bool Mesh::Initialize(int devAdress)
 
 	if (FAILED(result))
 	{
-		std::cout << "Error while trying to initialize Mesh Object: " << result;
+		spdlog::get("main_file_logger")->error("Error while trying to create index buffer for Mesh Object");
 		return false;
 	}
 
-	UnloadVertexData();
 	return true;
 }
 
@@ -137,11 +316,9 @@ void Mesh::Shutdown()
 		m_indexBuffer->Release();
 		m_indexBuffer = nullptr;
 	}
-
-	UnloadVertexData();
 }
 
-void Mesh::Render(int devConAdress)
+void Mesh::Render(__int64 devConAdress)
 {
 	ComPtr<ID3D11DeviceContext1> devCon = reinterpret_cast<ID3D11DeviceContext1*>(devConAdress);
 

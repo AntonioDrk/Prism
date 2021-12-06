@@ -43,6 +43,8 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>MyComponents</Filter>
     </ClCompile>
+    <ClCompile Include="D3dclass.cpp" />
+    <ClCompile Include="FileHandling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -51,6 +53,7 @@
     <ClInclude Include="Mesh.h">
       <Filter>MyComponents</Filter>
     </ClInclude>
+    <ClInclude Include="D3dclass.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -67,5 +70,8 @@
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

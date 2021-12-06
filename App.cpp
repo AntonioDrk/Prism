@@ -1,7 +1,11 @@
 ﻿// Precompiled headers
 #include "pch.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <collection.h>
 #include "MyEngine.h"
+
 
 //Common namespaces
 using namespace Windows::ApplicationModel;
@@ -20,11 +24,16 @@ ref class App sealed : public IFrameworkView
 {
 	bool WindowClosed;
 	BasicGameEngine BGEngine;
+	
 
 public:
+
 	// Function called by Windows
 	virtual void Initialize(CoreApplicationView^ AppView)
 	{
+		/*MyLogger::InitLogger("data.log");
+		MyLogger::LOG("Created Log File");*/
+		//basic_logfile_example();
 		// set the OnActivated function to handle to Activated "event"
 		AppView->Activated += ref new TypedEventHandler<CoreApplicationView^, IActivatedEventArgs^>(this, &App::OnActivated);
 

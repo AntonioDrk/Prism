@@ -1,6 +1,6 @@
 #pragma once
-#include "Mesh.h"
-
+#ifndef MYHELPER_GUARD
+#define MYHELPER_GUARD
 struct VERTEX
 {
 	DirectX::XMFLOAT3 position;
@@ -14,3 +14,4 @@ struct VERTEX
 //		return (_Left.GetVertexBuffer() == _Right.GetVertexBuffer() && _Left.GetIndexBuffer() == _Right.GetIndexBuffer());
 //	};
 //};
+#endif

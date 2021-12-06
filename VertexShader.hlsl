@@ -1,3 +1,13 @@
+/////////////////////
+// GLOBALS
+/////////////////////
+cbuffer MatrixBuffer
+{
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
+};
+
 struct VS_INPUT
 {
 	float3 Position	: POSITION;
@@ -14,7 +24,11 @@ VS_OUTPUT main(VS_INPUT InputVertex)
 {
 	VS_OUTPUT OutputVertex;
 
-	OutputVertex.Position = float4(InputVertex.Position, 1.0f);
+	// Change position to float4 structure for matrix calculations
+	OutputVertex.Position = float4(InputVertex.Position, 1.0f);	
+
+	// Calculate vertex position based on the given matrices 
+
 	OutputVertex.Color = float4(InputVertex.Color, 1.0f);
 	return OutputVertex;
 }

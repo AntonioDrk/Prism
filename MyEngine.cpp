@@ -1,91 +1,89 @@
 #include "pch.h"
-#include "MyEngine.h"
-#include "MyHelperData.h"
-
+#include <string>
+#include <collection.h>
 #include <fstream>
+#include "spdlog/spdlog.h"
+
+using namespace Microsoft::WRL;
+using namespace Windows::UI::Core;
+using namespace Platform;
+using namespace DirectX;
+
+#include "FileHandling.cpp"
+#include "MyEngine.h"
+
+void InitializeLogger(std::wstring path)
+{
+	try
+	{
+		std::string path(path.begin(), path.end());
+		auto logger = spdlog::basic_logger_mt("main_file_logger", path);
+		//logger->info("Created log file.");
+		//logger->flush();
+		//spdlog::register_logger(logger);
+		spdlog::set_default_logger(logger);
+		spdlog::flush_every(std::chrono::seconds(3));
+
+		spdlog::info("Log File Generated with success.");
+	}
+	catch (const spdlog::spdlog_ex& ex)
+	{
+		std::string err(ex.what());
+		std::wstring w_str = std::wstring(err.begin(), err.end());
+		const wchar_t* wchars = w_str.c_str();
+		Platform::String^ errStr = ref new Platform::String(wchars);
+		MessageDialog Dialog(errStr, "ERROR");
+		Dialog.ShowAsync();
+	}
+}
 
 // Prepares Direct3D for use
 void BasicGameEngine::Initialize()
 {
-	// Define the temporary pointers to device and device context
-	ComPtr<ID3D11Device> dev11;
-	ComPtr<ID3D11DeviceContext> devcon11;
+	LogHelper logHelper;
+	logHelper.CreateFile().then([this](StorageFile^ file) {
+		InitializeLogger(file->Path->Data());
+		spdlog::get("main_file_logger")->info("Initializing Game Engine");
+		Meshes->Append(ref new Mesh());
+		Meshes->Append(ref new Mesh());
 
-	// Create device and device context objects
-	D3D11CreateDevice(
-		nullptr,
-		D3D_DRIVER_TYPE_HARDWARE,
-		nullptr,
-		0,
-		nullptr,
-		0,
-		D3D11_SDK_VERSION,
-		&dev11,
-		nullptr,
-		&devcon11
-	);
-
-	// Convert the pointers from DX11 to DX11.1 version
-	dev11.As(&dev);
-	devcon11.As(&devcon);
-
-	// Convert our ID3D11Device1 into an IDXGIDevice1
-	ComPtr<IDXGIDevice1> dxgiDevice;
-	dev.As(&dxgiDevice);
-
-	// Use the IDXGIDevice1 interface to get access to the adapter
-	ComPtr<IDXGIAdapter> dxgiAdapter;
-	dxgiDevice->GetAdapter(&dxgiAdapter);
-
-	// Use the IDXGIAdapter interface to get access to the factory
-	ComPtr<IDXGIFactory2> dxgiFactory;
-	dxgiAdapter->GetParent(__uuidof(IDXGIFactory2), &dxgiFactory);
-
-	// set up the swap chain description
-	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
-	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;    // how the swap chain should be used
-	scd.BufferCount = 2;                                  // a front buffer and a back buffer
-	scd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;              // the most common swap chain format
-	scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;    // the recommended flip mode
-	scd.SampleDesc.Count = 1;                             // disable anti-aliasing
-
-	CoreWindow^ CurrWindow = CoreWindow::GetForCurrentThread(); 
-
-	dxgiFactory->CreateSwapChainForCoreWindow(
-		dev.Get(),									// address of the device
-		reinterpret_cast<IUnknown*>(CurrWindow),    // address of the window
-		&scd,										// address of the swap chain description
-		nullptr,									// advanced
-		&swapchain);								// address of the new swap chain pointer
-
-	// get a pointer directly to the back buffer
-	ComPtr<ID3D11Texture2D> backbuffer;
-	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backbuffer);
-
-	// Create a render target pointing to the back buffer
-	dev->CreateRenderTargetView(backbuffer.Get(), nullptr, &renderTarget);
-
-	// Set the viewport normalized coordinate system
-	D3D11_VIEWPORT viewport = { 0 };
-
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.Width = CurrWindow->Bounds.Width;
-	viewport.Height = CurrWindow->Bounds.Height;
-
-	devcon->RSSetViewports(1, &viewport);
-
-	Meshes->Append(ref new Mesh());
-
-	// initialize graphics and the pipeline
-	InitGraphics();
-	InitPipeline();
+		// initialize graphics and the pipeline
+		InitGraphics();
+		InitPipeline();
+		spdlog::get("main_file_logger")->info("End of Game Engine initialization");
+	});
 }
 
 // Loads and initializes all graphics data
 void BasicGameEngine::InitGraphics()
 {
-	Meshes->GetAt(0)->Initialize((int)dev.Get());
+	spdlog::get("main_file_logger")->info("Initializing Basic Graphics");
+	CoreWindow^ currWindow = CoreWindow::GetForCurrentThread();
+	if (d3dClass.Initialize(currWindow, currWindow->Bounds.Width, currWindow->Bounds.Height, false, true, 5.0f, 0.1f))
+	{
+		bool rez;
+		devContextPtrAdress = reinterpret_cast<__int64>(d3dClass.GetDeviceContext());
+		devPtrAdress = reinterpret_cast<__int64>(d3dClass.GetDevice());
+
+		spdlog::get("main_file_logger")->info("Loading mesh data");
+		Meshes->GetAt(0)->LoadSimplePlaneData();
+		rez = Meshes->GetAt(0)->Initialize(devPtrAdress);
+		if (!rez)
+		{
+			spdlog::get("main_file_logger")->error("Could not initialize mesh 0 with success");
+		}
+		Meshes->GetAt(1)->LoadSimpleTriangleData();
+		rez = Meshes->GetAt(1)->Initialize(devPtrAdress);
+		if (!rez)
+		{
+			spdlog::get("main_file_logger")->error("Could not initialize mesh 1 with success");
+		}
+	}
+	else
+	{
+		spdlog::get("main_file_logger")->error("Could not initialize d3dClass");
+	}
+	spdlog::get("main_file_logger")->info("End of Basic Graphics Init");
 }
 
 void BasicGameEngine::Update()
@@ -95,12 +93,12 @@ void BasicGameEngine::Update()
 
 void BasicGameEngine::Render()
 {
-	// Set our new render target object as the active render target
-	devcon->OMSetRenderTargets(1, renderTarget.GetAddressOf(), nullptr);
+	if (devContextPtrAdress == 0 || devPtrAdress == 0) return;
 
+	d3dClass.BeginScene(0.0f, 0.2f, 0.4f, 1.0f);
 	// clear the back buffer to a solid color
-	float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
-	devcon->ClearRenderTargetView(renderTarget.Get(), color);
+	// float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	// devcon->ClearRenderTargetView(renderTarget.Get(), color);
 
 	//// Set the vertex buffer
 	//UINT stride = sizeof(VERTEX);
@@ -109,14 +107,16 @@ void BasicGameEngine::Render()
 
 	//// Set the primitive type of topology
 	//devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// Render all the stored objects
+	for (unsigned int i = 0; i < Meshes->Size; i++)
+	{
+		Meshes->GetAt(i)->Render(devContextPtrAdress);
 
-	Meshes->GetAt(0)->Render((int)devcon.Get());
+		// draw verticies, starting from vertex 0
+		d3dClass.GetDeviceContext()->Draw(Meshes->GetAt(i)->GetIndexCount(), 0);
+	}
 
-	// draw 3 verticies (in our case), starting from vertex 0
-	devcon->Draw(Meshes->GetAt(0)->GetIndexCount(), 0);
-
-	// Switch the back buffer and the front buffer
-	swapchain->Present(1, 0);
+	d3dClass.EndScene();
 }
 
 // Initializes the GPU settings and prepares it for rendering
@@ -128,12 +128,12 @@ void BasicGameEngine::InitPipeline()
 	Array<byte>^ PSFile = LoadShaderFile("PixelShader.cso");
 
 	// Creates the shader objects
-	dev->CreateVertexShader(VSFile->Data, VSFile->Length, nullptr, &vertexShader);
-	dev->CreatePixelShader(PSFile->Data, PSFile->Length, nullptr, &pixelShader);
+	d3dClass.GetDevice()->CreateVertexShader(VSFile->Data, VSFile->Length, nullptr, &vertexShader);
+	d3dClass.GetDevice()->CreatePixelShader(PSFile->Data, PSFile->Length, nullptr, &pixelShader);
 
 	// Set the shader objects as the active shaders
-	devcon->VSSetShader(vertexShader.Get(), nullptr, 0);
-	devcon->PSSetShader(pixelShader.Get(), nullptr, 0);
+	d3dClass.GetDeviceContext()->VSSetShader(vertexShader.Get(), nullptr, 0);
+	d3dClass.GetDeviceContext()->PSSetShader(pixelShader.Get(), nullptr, 0);
 
 	// Initialize input layout
 	D3D11_INPUT_ELEMENT_DESC ied[] =
@@ -143,8 +143,12 @@ void BasicGameEngine::InitPipeline()
 	};
 
 	// Create the input layout
-	dev->CreateInputLayout(ied, ARRAYSIZE(ied), VSFile->Data, VSFile->Length, &inputLayout);
-	devcon->IASetInputLayout(inputLayout.Get());
+	HRESULT result = d3dClass.GetDevice()->CreateInputLayout(ied, ARRAYSIZE(ied), VSFile->Data, VSFile->Length, &inputLayout);
+	if (FAILED(result))
+	{
+		return;
+	}
+	d3dClass.GetDeviceContext()->IASetInputLayout(inputLayout.Get());
 }
 
 // Loads a file into an array

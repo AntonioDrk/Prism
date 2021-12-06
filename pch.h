@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <winrt/Windows.Foundation.h>
 #include <wrl.h>
 #include <wrl/client.h>
 #include <dxgi1_4.h>
