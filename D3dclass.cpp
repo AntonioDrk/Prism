@@ -1,8 +1,10 @@
 #include "pch.h"
 using namespace Microsoft::WRL;
 using namespace Windows::UI::Core;
+using namespace Windows::Graphics::Display;
 
 #include "D3dclass.h"
+#include <sstream>
 
 D3DClass::D3DClass()
 {
@@ -16,7 +18,6 @@ D3DClass::~D3DClass()
 bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenHeight, 
 						  bool vsync, bool fullscreen, float screenDepth, float screenNear)
 {	
-
 	// Create DirectX graphics interface factory
 	// Define the temporary pointers to device and device context
 	HRESULT result;
@@ -29,6 +30,11 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	int error;
 	size_t stringLength;
 	unsigned int numModes, numerator, denominator;
+	DisplayInformation^ displayInfo = DisplayInformation::GetForCurrentView();
+	double scaleFactor = displayInfo->RawPixelsPerViewPixel;
+	std::wstringstream wss;
+	wss << "RawPixelsPerViewPixel = " << scaleFactor << '\n';
+	OutputDebugString(wss.str().c_str());
 
 	m_vsync_enabled = vsync;
 
@@ -37,7 +43,7 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		0,
+		D3D11_CREATE_DEVICE_DEBUG,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
@@ -139,6 +145,8 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC1 scd = { 0 };
+	scd.Width = static_cast<UINT>(screenWidth * scaleFactor);
+	scd.Height = static_cast<UINT>(screenHeight * scaleFactor);
 	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;    // how the swap chain should be used
 	scd.BufferCount = 2;                                  // a front buffer and a back buffer
 	scd.Format = DXGI_FORMAT_B8G8R8A8_UNORM;              // the most common swap chain format
@@ -204,8 +212,8 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	viewport.TopLeftY = 0;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
-	viewport.Width = renderWindow->Bounds.Width;
-	viewport.Height = renderWindow->Bounds.Height;
+	viewport.Width = renderWindow->Bounds.Width * scaleFactor;
+	viewport.Height = renderWindow->Bounds.Height * scaleFactor;
 
 	m_deviceContext->RSSetViewports(1, &viewport);
 
@@ -214,7 +222,7 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), nullptr);
 
 	// Setup the projection matrix
-	fieldOfView = DirectX::XM_PI / 4.0f;
+	fieldOfView = DirectX::XM_PI / 2.0f;
 	screenAspect = (float)screenWidth / (float)screenHeight;
 
 	// Create the projection matrix for 3D rendering;
@@ -280,12 +288,12 @@ void D3DClass::EndScene()
 	if (m_vsync_enabled)
 	{
 		// Lock to screen refresh rate.
-		m_swapChain->Present(1, 0);
+		m_swapChain->Present(1,0);
 	}
 	else
 	{
 		// Present as fast as possible.
-		m_swapChain->Present(0, 0);
+		m_swapChain->Present(1, 0);
 	}
 }
 
@@ -304,7 +312,7 @@ void D3DClass::RenderTriangleTest()
 
 }
 
-void D3DClass::GetPorjectionMatrix(DirectX::XMMATRIX& projectionMatrix)
+void D3DClass::GetProjectionMatrix(DirectX::XMMATRIX& projectionMatrix)
 {
 	projectionMatrix = m_projectionMatrix;
 }

@@ -34,7 +34,8 @@ public:
 	/// <param name="screenDepth">The depth of our scene</param>
 	/// <param name="screenNear">The near plane of our projection</param>
 	/// <returns>(boolean) representing the success</returns>
-	bool Initialize(Windows::UI::Core::CoreWindow^ renderWindow, int screenWidth, int screenHeight, bool vsync, bool fullscreen, float screenDepth, float screenNear);
+	bool Initialize(Windows::UI::Core::CoreWindow^ renderWindow, int screenWidth, int screenHeight, 
+					bool vsync, bool fullscreen, float screenDepth, float screenNear);
 	void Shutdown();
 
 	void BeginScene(float,float,float,float);
@@ -45,7 +46,7 @@ public:
 
 	void RenderTriangleTest();
 	
-	void GetPorjectionMatrix(DirectX::XMMATRIX&);
+	void GetProjectionMatrix(DirectX::XMMATRIX&);
 	void GetWorldMatrix(DirectX::XMMATRIX&);
 	void GetOrthoMatrix(DirectX::XMMATRIX&);
 	

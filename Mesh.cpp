@@ -21,7 +21,7 @@ bool Mesh::LoadSimpleTriangleData()
 	m_indexCount = 3;
 
 	vertices = new VERTEX[m_vertexCount];
-	indices = new unsigned long[m_indexCount];
+	indices = new unsigned short[m_indexCount];
 
 	if (!vertices || !indices)
 	{
@@ -30,21 +30,21 @@ bool Mesh::LoadSimpleTriangleData()
 
 	//TODO: Remove this brute force code, load the data from a file instead
 	vertices[0] = {
-			DirectX::XMFLOAT3(0.75f, 0.0f, 0.0f),
-			DirectX::XMFLOAT3(0.3f, 0.5f, 0.0f)
+			DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
 	};
 
 	vertices[1] = {
-			DirectX::XMFLOAT3(0.95f, 0.0f, 0.0f),
-			DirectX::XMFLOAT3(0.0f, 0.7f, 0.7f)
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
 	};
 
 	vertices[2] = {
-			DirectX::XMFLOAT3(0.85f, -0.75f, 0.0f),
-			DirectX::XMFLOAT3(0.2f, 0.1f, 0.5f)
+			DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f),
+			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 	};
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < m_indexCount; i++)
 	{
 		indices[i] = i;
 	}
@@ -58,7 +58,7 @@ bool Mesh::LoadSimplePlaneData()
 	m_indexCount = 6;
 
 	vertices = new VERTEX[m_vertexCount];
-	indices = new unsigned long[m_indexCount];
+	indices = new unsigned short[m_indexCount];
 
 	if (!vertices || !indices)
 	{
@@ -96,7 +96,7 @@ bool Mesh::LoadSimplePlaneData()
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 	};
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < m_indexCount; i++)
 	{
 		indices[i] = i;
 	}
@@ -110,7 +110,7 @@ bool Mesh::LoadSimpleCubeData()
 	m_indexCount = 36;
 
 	vertices = new VERTEX[m_vertexCount];
-	indices = new unsigned long[m_indexCount];
+	indices = new unsigned short[m_indexCount];
 
 	VERTEX cubeData[] =
 	{
@@ -269,6 +269,7 @@ bool Mesh::Initialize(__int64 devAdress)
 	
 	bd_vertices.ByteWidth = sizeof(VERTEX) * m_vertexCount;
 	bd_vertices.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd_indices.StructureByteStride = sizeof(VERTEX);
 
 	result = dev->CreateBuffer(&bd_vertices, &srd_vertices, &m_vertexBuffer);
 	if (FAILED(result))
@@ -278,8 +279,9 @@ bool Mesh::Initialize(__int64 devAdress)
 	}
 
 	D3D11_SUBRESOURCE_DATA srd_indices = { indices, 0, 0 };
-	bd_indices.ByteWidth = sizeof(unsigned long) * m_indexCount;
+	bd_indices.ByteWidth = sizeof(unsigned short) * m_indexCount;
 	bd_indices.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd_indices.StructureByteStride = sizeof(unsigned short);
 
 	result = dev->CreateBuffer(&bd_indices, &srd_indices, &m_indexBuffer);
 
@@ -332,7 +334,7 @@ void Mesh::Render(__int64 devConAdress)
 	devCon->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 	
 	// Set the index buffer to active in the input assembler so it can be rendered
-	devCon->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	devCon->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles
 	devCon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

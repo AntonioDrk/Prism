@@ -1,8 +1,10 @@
 #pragma once
 
 #include "MyHelperData.h"
-#include "Mesh.h"
 #include "D3dclass.h"
+#include "Mesh.h"
+#include "CameraClass.h"
+#include "Colorshader.h"
 
 /// <summary>
 /// The root class for the GameEngine
@@ -10,6 +12,16 @@
 class BasicGameEngine
 {
 public:
+	
+	BasicGameEngine();
+	bool Initialize();
+	void InitGraphics();
+	void Update();
+	bool Render();
+	//Platform::Array<byte>^ LoadShaderFile(std::string);
+	void InitPipeline();
+
+private:
 	//ComPtr<ID3D11Device1> dev;				// The device interface to the GPU
 	//ComPtr<ID3D11DeviceContext1> devcon;	// The device context;
 	//ComPtr<IDXGISwapChain1> swapchain;		// Swap chain interface
@@ -24,14 +36,11 @@ public:
 
 	Platform::Collections::Vector<Mesh^>^ Meshes = ref new Platform::Collections::Vector<Mesh^>();
 
+	CameraClass* m_Camera;
+	ColorShaderClass* m_ColorShader;
+
 	unsigned int vertexCount;
 	__int64 devContextPtrAdress;
 	__int64 devPtrAdress;
 
-	void Initialize();
-	void InitGraphics();
-	void Update();
-	void Render();
-	Platform::Array<byte>^ LoadShaderFile(std::string);
-	void InitPipeline();
 };

@@ -45,6 +45,12 @@
     </ClCompile>
     <ClCompile Include="D3dclass.cpp" />
     <ClCompile Include="FileHandling.cpp" />
+    <ClCompile Include="Colorshader.cpp">
+      <Filter>MyComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraClass.cpp">
+      <Filter>MyComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -54,6 +60,12 @@
       <Filter>MyComponents</Filter>
     </ClInclude>
     <ClInclude Include="D3dclass.h" />
+    <ClInclude Include="Colorshader.h">
+      <Filter>MyComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraClass.h">
+      <Filter>MyComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">

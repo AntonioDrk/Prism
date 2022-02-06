@@ -14,15 +14,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
 	VERTEX *vertices;
-	unsigned long* indices;
+	unsigned short* indices;
 	uint32 m_vertexCount, m_indexCount;
 
 public:	
-	//constexpr bool operator() (const Mesh& lhs, const Mesh& rhs)
-	//{
-	//	return (lhs.m_indexBuffer == rhs.m_indexBuffer && lhs.m_vertexBuffer == rhs.m_vertexBuffer);
-	//}
-
 	bool Initialize(__int64 ID3D11Device1);
 	void LoadByFile(Platform::String^);
 	void Shutdown();

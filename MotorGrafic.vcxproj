@@ -232,6 +232,9 @@
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsWinRT>true</CompileAsWinRT>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -246,6 +249,8 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -258,6 +263,8 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="Colorshader.h" />
     <ClInclude Include="D3dclass.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyEngine.h" />
@@ -266,6 +273,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="Colorshader.cpp" />
     <ClCompile Include="D3dclass.cpp" />
     <ClCompile Include="FileHandling.cpp" />
     <ClCompile Include="Mesh.cpp" />
