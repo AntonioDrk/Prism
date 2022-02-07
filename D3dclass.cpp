@@ -167,7 +167,11 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	{
 		return false;
 	}
-
+	result = dxgiDevice->SetMaximumFrameLatency(3);
+	if (FAILED(result))
+	{
+		return false;
+	}
 	// Credits to
 	// https://stackoverflow.com/questions/59263246/changing-refresh-rate-under-full-screen-mode-in-directx11-code-does-not-work
 	DXGI_MODE_DESC modeDesc = { 0 };
@@ -274,6 +278,8 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	color[1] = green;
 	color[2] = blue;
 	color[3] = alpha;
+
+	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), 0);
 
 	// Clear the back buffer.
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView.Get(), color);

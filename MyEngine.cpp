@@ -110,7 +110,7 @@ bool BasicGameEngine::Render()
 	bool result;
 
 	// Clear the buffers to begin the scene.
-	//d3dClass.BeginScene(0.0f, 0.2f, 0.4f, 1.0f);
+	d3dClass.BeginScene(0.0f, 0.2f, 0.4f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
@@ -121,8 +121,8 @@ bool BasicGameEngine::Render()
 	d3dClass.GetProjectionMatrix(projectionMatrix);
 
 	// clear the back buffer to a solid color
-	// float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
-	// devcon->ClearRenderTargetView(renderTarget.Get(), color);
+	//float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	//devcon->ClearRenderTargetView(renderTarget.Get(), color);
 
 	//// Set the vertex buffer
 	//UINT stride = sizeof(VERTEX);
