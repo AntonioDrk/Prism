@@ -15,9 +15,7 @@ class ColorShaderClass
 private:
 	struct MatrixBufferType
 	{
-		XMMATRIX world;
-		XMMATRIX view;
-		XMMATRIX projection;
+		XMMATRIX MVP;
 	};
 
 public:

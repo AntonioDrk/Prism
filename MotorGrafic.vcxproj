@@ -266,10 +266,12 @@
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="Colorshader.h" />
     <ClInclude Include="D3dclass.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyEngine.h" />
     <ClInclude Include="MyHelperData.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -277,6 +279,7 @@
     <ClCompile Include="Colorshader.cpp" />
     <ClCompile Include="D3dclass.cpp" />
     <ClCompile Include="FileHandling.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyEngine.cpp" />
     <ClCompile Include="pch.cpp">

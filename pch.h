@@ -13,3 +13,12 @@
 #include <memory>
 #include <agile.h>
 #include <concrt.h>
+
+namespace DX
+{
+	inline void OutputDebug(Platform::String^ Msg)
+	{
+		auto data = std::wstring(Msg->Data());
+		OutputDebugString(data.c_str());
+	}
+}

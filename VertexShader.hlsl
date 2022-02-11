@@ -3,9 +3,7 @@
 /////////////////////
 cbuffer MatrixBuffer
 {
-	matrix worldMatrix;
-	matrix viewMatrix;
-	matrix projectionMatrix;
+	matrix MVP;
 };
 
 struct VS_INPUT
@@ -24,11 +22,8 @@ VS_OUTPUT main(VS_INPUT InputVertex)
 {
 	VS_OUTPUT OutputVertex;
 
-	// Change position to float4 structure for matrix calculations
-	OutputVertex.Position = float4(InputVertex.Position, 1.0f);	
-	/*OutputVertex.Position = mul(InputVertex.Position, worldMatrix);
-	OutputVertex.Position = mul(OutputVertex.Position, viewMatrix);
-	OutputVertex.Position = mul(OutputVertex.Position, projectionMatrix);*/
+	// Change position to float4 structure for matrix calculations	
+	OutputVertex.Position = mul(float4(InputVertex.Position, 1.0f), MVP);
 
 	OutputVertex.Color = float4(InputVertex.Color, 1.0f);
 	return OutputVertex;

@@ -172,27 +172,27 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	{
 		return false;
 	}
-	// Credits to
-	// https://stackoverflow.com/questions/59263246/changing-refresh-rate-under-full-screen-mode-in-directx11-code-does-not-work
-	DXGI_MODE_DESC modeDesc = { 0 };
-	modeDesc.Width = screenWidth;
-	modeDesc.Height = screenHeight;
-	if (m_vsync_enabled)
-	{
-		modeDesc.RefreshRate.Numerator = numerator;
-		modeDesc.RefreshRate.Denominator = denominator;
-	}
-	else
-	{
-		modeDesc.RefreshRate.Numerator = 0;
-		modeDesc.RefreshRate.Denominator = 1;
-	}
+	//// Credits to
+	//// https://stackoverflow.com/questions/59263246/changing-refresh-rate-under-full-screen-mode-in-directx11-code-does-not-work
+	//DXGI_MODE_DESC modeDesc = { 0 };
+	//modeDesc.Width = screenWidth;
+	//modeDesc.Height = screenHeight;
+	//if (m_vsync_enabled)
+	//{
+	//	modeDesc.RefreshRate.Numerator = numerator;
+	//	modeDesc.RefreshRate.Denominator = denominator;
+	//}
+	//else
+	//{
+	//	modeDesc.RefreshRate.Numerator = 0;
+	//	modeDesc.RefreshRate.Denominator = 1;
+	//}
 
-	modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	//modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	//modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-	m_swapChain->SetFullscreenState(fullscreen, nullptr);
-	m_swapChain->ResizeTarget(&modeDesc);
+	//m_swapChain->SetFullscreenState(fullscreen, nullptr);
+	//m_swapChain->ResizeTarget(&modeDesc);
 
 	// get a pointer directly to the back buffer
 	ComPtr<ID3D11Texture2D> backbuffer;
@@ -226,17 +226,17 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), nullptr);
 
 	// Setup the projection matrix
-	fieldOfView = DirectX::XM_PI / 2.0f;
-	screenAspect = (float)screenWidth / (float)screenHeight;
+	fieldOfView = 90.0f * DirectX::XM_PI / 180.0f;
+	screenAspect = viewport.Width / viewport.Height;
 
 	// Create the projection matrix for 3D rendering;
-	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fieldOfView, screenAspect, screenNear, screenDepth);
+	m_projectionMatrix = DirectX::XMMatrixPerspectiveFovRH(fieldOfView, screenAspect, screenNear, screenDepth);
 
 	// Initialize the world matrix to the identity matrix.
 	m_worldMatrix = DirectX::XMMatrixIdentity();
 
 	// Create an orthographic projection matrix for 2D rendering.
-	m_orthoMatrix = DirectX::XMMatrixOrthographicLH((float)screenWidth, (float)screenHeight, screenNear, screenDepth);
+	m_orthoMatrix = DirectX::XMMatrixOrthographicRH(viewport.Width, viewport.Height, screenNear, screenDepth);
 
 	return true;
 }

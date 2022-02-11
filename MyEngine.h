@@ -16,7 +16,7 @@ public:
 	BasicGameEngine();
 	bool Initialize();
 	void InitGraphics();
-	void Update();
+	void Update(float TotalTime, float DeltaTime);
 	bool Render();
 	//Platform::Array<byte>^ LoadShaderFile(std::string);
 	void InitPipeline();

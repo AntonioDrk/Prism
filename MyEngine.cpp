@@ -70,7 +70,7 @@ void BasicGameEngine::InitGraphics()
 	CoreWindow^ currWindow = CoreWindow::GetForCurrentThread();
 	int screenWidth = currWindow->Bounds.Width;
 	int screenHeight = currWindow->Bounds.Height;
-	if (d3dClass.Initialize(currWindow, screenWidth, screenHeight, false, true, 5.0f, 0.1f))
+	if (d3dClass.Initialize(currWindow, screenWidth, screenHeight, false, true, 1000.0f, 0.001f))
 	{
 		bool rez;
 		devContextPtrAdress = reinterpret_cast<__int64>(d3dClass.GetDeviceContext());
@@ -97,16 +97,25 @@ void BasicGameEngine::InitGraphics()
 	spdlog::get("main_file_logger")->info("End of Basic Graphics Init");
 }
 
-void BasicGameEngine::Update()
+void BasicGameEngine::Update(float TotalTime, float DeltaTime)
 {
-
+	if (m_Camera)
+	{
+		float speed = 1.0f;
+		XMFLOAT3 camPos = m_Camera->GetRotation();
+		float amount = speed * DeltaTime;
+		DX::OutputDebug(camPos.x + "," + camPos.y + "," + camPos.z + "\n");
+		m_Camera->SetRotation(camPos.x + amount, camPos.y , camPos.z );
+	}
 }
 
 bool BasicGameEngine::Render()
 {
 	if (devContextPtrAdress == 0 || devPtrAdress == 0) return false;
 
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX worldMatrix = *new XMMATRIX();
+	XMMATRIX viewMatrix = *new XMMATRIX();
+	XMMATRIX projectionMatrix = *new XMMATRIX();
 	bool result;
 
 	// Clear the buffers to begin the scene.
@@ -161,7 +170,8 @@ void BasicGameEngine::InitPipeline()
 		throw new std::exception("Could not create camera object");
 	}
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, 5.0f);
+	m_Camera->SetRotation(10, 18, 0);
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;

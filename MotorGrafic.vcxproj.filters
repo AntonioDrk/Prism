@@ -35,6 +35,15 @@
     <Filter Include="MyComponents">
       <UniqueIdentifier>{6eb2e329-eb6d-44fd-8ead-121038d3b799}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{1843e534-32af-4176-9ccb-d38df2cf10ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\time">
+      <UniqueIdentifier>{a1f45532-98c6-4834-98f4-18cfb98ec519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\input">
+      <UniqueIdentifier>{1b35cd7f-bec2-4cec-8d30-2d7bd9a025b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -51,6 +60,9 @@
     <ClCompile Include="CameraClass.cpp">
       <Filter>MyComponents</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>lib\input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -65,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="CameraClass.h">
       <Filter>MyComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>lib\time</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>lib\input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

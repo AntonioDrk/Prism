@@ -169,8 +169,8 @@ bool ColorShaderClass::SetShaderParameteres(ID3D11DeviceContext1* devContext, XM
 	unsigned int bufferNumber;
 
 	// Transpose the matrices to prepare them for the shader.
-	/*worldMatrix = XMMatrixTranspose(worldMatrix);
-	viewMatrix = XMMatrixTranspose(viewMatrix);
+	XMMATRIX MVP = XMMatrixTranspose(worldMatrix * viewMatrix * projectionMatrix);
+	/*viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);*/
 
 	// Lock the constant buffer so it can be written to.
@@ -185,9 +185,12 @@ bool ColorShaderClass::SetShaderParameteres(ID3D11DeviceContext1* devContext, XM
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 
 	// Copy the matrices into the constant buffer.
-	dataPtr->world = worldMatrix;
+	//dataPtr->MVP = MVP;
+	memcpy(mappedResource.pData, &MVP, sizeof(MVP));
+	
+	/*dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	dataPtr->projection = projectionMatrix;*/
 
 	// Unlock the constant buffer.
 	devContext->Unmap(m_matrixBuffer, 0);
