@@ -6,6 +6,7 @@
 #include <collection.h>
 #include "MyEngine.h"
 #include "Timer.h"
+#include "Input.h"
 
 
 //Common namespaces
@@ -139,21 +140,12 @@ public:
 
 	void OnKeyDown(CoreWindow^ Window, KeyEventArgs^ Args)
 	{
-		if (Args->VirtualKey == VirtualKey::W || Args->VirtualKey == VirtualKey::A ||
-			Args->VirtualKey == VirtualKey::S || Args->VirtualKey == VirtualKey::D)
-		{
-			MessageDialog Dialog("You pressed a WASD key, wow!", "Announcement!");
-			Dialog.ShowAsync();
-		}
+		Input::SetKeyDown(Args->VirtualKey);
 	}
 
 	void OnKeyUp(CoreWindow^ Window, KeyEventArgs^ Args)
 	{
-		if (Args->VirtualKey == VirtualKey::Control) 
-		{
-			MessageDialog Dialog("You let go of your control! Aaaaaa!", "Announcement!");
-			Dialog.ShowAsync();
-		}
+		Input::SetKeyUp(Args->VirtualKey);
 	}
 
 	// TODO: Save state of the application here !

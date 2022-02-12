@@ -226,7 +226,7 @@ bool D3DClass::Initialize(CoreWindow^ renderWindow, int screenWidth, int screenH
 	m_deviceContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), nullptr);
 
 	// Setup the projection matrix
-	fieldOfView = 90.0f * DirectX::XM_PI / 180.0f;
+	fieldOfView = 70.0f * DirectX::XM_PI / 180.0f;
 	screenAspect = viewport.Width / viewport.Height;
 
 	// Create the projection matrix for 3D rendering;

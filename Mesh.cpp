@@ -111,109 +111,110 @@ bool Mesh::LoadSimpleCubeData()
 
 	vertices = new VERTEX[m_vertexCount];
 	indices = new unsigned short[m_indexCount];
-
+	float halfSize = 0.5;
 	VERTEX cubeData[] =
 	{
+		// Front face
 		{
-			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(-halfSize,-halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 		},
 		{
-			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,-halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 		},
 		{
-			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(-halfSize,halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 		},
 		{
-			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)
 		},
+		// Back Face
+		{
+			DirectX::XMFLOAT3(-halfSize,-halfSize,halfSize),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(halfSize,-halfSize,halfSize),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(-halfSize,halfSize,halfSize),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		{
+			DirectX::XMFLOAT3(halfSize,halfSize,halfSize),
+			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
+		},
+		// Left
+		{ 
+			DirectX::XMFLOAT3(-halfSize,-halfSize,-halfSize),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-halfSize,halfSize,-halfSize),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-halfSize,-halfSize,halfSize),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		{ 
+			DirectX::XMFLOAT3(-halfSize,halfSize,halfSize),
+			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
+		},
+		// Right
 
-		{
-			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-		{
-			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
-			DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)
-		},
-
 		{ 
-			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		{ 
-			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		{ 
-			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		{ 
-			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
-			DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)
-		},
-		  
-
-		{ 
-			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,-halfSize,-halfSize),
 			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,halfSize,-halfSize),
 			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(halfSize,-halfSize,halfSize),
 			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(halfSize,halfSize,halfSize),
 			DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f)
 		},
-		  
+		// Bottom
 		{ 
-			DirectX::XMFLOAT3(-0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(-halfSize,-halfSize,-halfSize),
 			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(-0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,-halfSize,-halfSize),
 			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(0.5f,0.5f,-0.5f),
+			DirectX::XMFLOAT3(-halfSize,-halfSize,halfSize),
 			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(0.5f,0.5f,0.5f),
+			DirectX::XMFLOAT3(halfSize,-halfSize,halfSize),
 			DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)
 		},
-		  
+		// Top
 		{ 
-			DirectX::XMFLOAT3(-0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(-halfSize,halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(-0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(halfSize,halfSize,-halfSize),
 			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(0.5f,-0.5f,-0.5f),
+			DirectX::XMFLOAT3(-halfSize,halfSize,halfSize),
 			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
 		},
 		{ 
-			DirectX::XMFLOAT3(0.5f,-0.5f,0.5f),
+			DirectX::XMFLOAT3(halfSize,halfSize,halfSize),
 			DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f)
 		}
 	};
@@ -223,18 +224,12 @@ bool Mesh::LoadSimpleCubeData()
 
 	unsigned long cubeIndices [] =
 	{
-		0, 1, 3,
-		3, 1, 2,
-		4, 5, 7,
-		7, 5, 6,
-		8, 9, 11,
-		11, 9, 10,
-		12, 13, 15,
-		15, 13, 14,
-		16, 17, 19,
-		19, 17, 18,
-		20, 21, 23,
-		23, 21, 22
+		0,2, 1,    2,3,1,
+		4,5, 7,    4,7,6,
+		8,10, 9,  10,11,9,
+		12,13,15, 12,15,14,
+		16,17,18, 18,17,19,
+		20,23,21, 20,22,23
 	};
 
 	std::copy(std::begin(cubeIndices), std::end(cubeIndices), indices);

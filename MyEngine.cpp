@@ -11,6 +11,7 @@ using namespace DirectX;
 
 #include "FileHandling.cpp"
 #include "MyEngine.h"
+#include "Input.h"
 
 BasicGameEngine::BasicGameEngine()
 {
@@ -77,7 +78,7 @@ void BasicGameEngine::InitGraphics()
 		devPtrAdress = reinterpret_cast<__int64>(d3dClass.GetDevice());
 
 		spdlog::get("main_file_logger")->info("Loading mesh data");
-		Meshes->GetAt(0)->LoadSimpleTriangleData();
+		Meshes->GetAt(0)->LoadSimpleCubeData();
 		rez = Meshes->GetAt(0)->Initialize(devPtrAdress);
 		if (!rez)
 		{
@@ -101,11 +102,25 @@ void BasicGameEngine::Update(float TotalTime, float DeltaTime)
 {
 	if (m_Camera)
 	{
-		float speed = 1.0f;
-		XMFLOAT3 camPos = m_Camera->GetRotation();
-		float amount = speed * DeltaTime;
+		float moveSpeed = 2.0f * DeltaTime;
+		XMFLOAT3 camPos = m_Camera->GetPosition();
+		if (Input::KeyDown(Windows::System::VirtualKey::A))
+		{
+			m_Camera->SetPosition(camPos.x - moveSpeed, camPos.y, camPos.z);
+		}
+		if (Input::KeyDown(Windows::System::VirtualKey::D))
+		{
+			m_Camera->SetPosition(camPos.x + moveSpeed, camPos.y, camPos.z);
+		}
+		if (Input::KeyDown(Windows::System::VirtualKey::W))
+		{
+			m_Camera->SetPosition(camPos.x, camPos.y, camPos.z - moveSpeed);
+		}
+		if (Input::KeyDown(Windows::System::VirtualKey::S))
+		{
+			m_Camera->SetPosition(camPos.x, camPos.y, camPos.z + moveSpeed);
+		}
 		DX::OutputDebug(camPos.x + "," + camPos.y + "," + camPos.z + "\n");
-		m_Camera->SetRotation(camPos.x + amount, camPos.y , camPos.z );
 	}
 }
 
@@ -170,8 +185,8 @@ void BasicGameEngine::InitPipeline()
 		throw new std::exception("Could not create camera object");
 	}
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, 5.0f);
-	m_Camera->SetRotation(10, 18, 0);
+	m_Camera->SetPosition(2.5f, 0.0f, 2.5f);
+	m_Camera->SetRotation(-10, 0, 0);
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
