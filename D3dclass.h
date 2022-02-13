@@ -9,10 +9,12 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_deviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> m_swapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
-	//Microsoft::WRL::ComPtr<ID3D11Texture2D*> m_depthStencilBuffer;
-	//Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
-	//Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
-	//Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterState;
+	//Microsoft::WRL::ComPtr<ID3D11Texture2D*> m_
+	// StencilBuffer;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> m_depthStencilBuffer;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterState;
 	DirectX::XMMATRIX m_projectionMatrix;
 	DirectX::XMMATRIX m_worldMatrix;
 	DirectX::XMMATRIX m_orthoMatrix;

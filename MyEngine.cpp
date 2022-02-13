@@ -121,6 +121,7 @@ void BasicGameEngine::Update(float TotalTime, float DeltaTime)
 			m_Camera->SetPosition(camPos.x, camPos.y, camPos.z + moveSpeed);
 		}
 		DX::OutputDebug(camPos.x + "," + camPos.y + "," + camPos.z + "\n");
+		DX::OutputDebug("Mouse pos: (" + Input::GetMousePos().x + "," + Input::GetMousePos().y + ")\n");
 	}
 }
 

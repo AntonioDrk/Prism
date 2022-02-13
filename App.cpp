@@ -111,16 +111,31 @@ public:
 
 	void OnPointerPressed(CoreWindow^ Window, PointerEventArgs^ Args)
 	{
+		if (Args->CurrentPoint->Properties->IsLeftButtonPressed)
+		{
+			Input::SetMouseKeyDown(Input::MouseButton::LeftMouseButton);
+		}
+		if (Args->CurrentPoint->Properties->IsRightButtonPressed)
+		{
+			Input::SetMouseKeyDown(Input::MouseButton::RightMouseButton);
+		}
+		if (Args->CurrentPoint->Properties->IsMiddleButtonPressed)
+		{
+			Input::SetMouseKeyDown(Input::MouseButton::MiddleMouseButton);
+		}
 		// Test code to see that the event is called
 		int px = int(Args->CurrentPoint->Position.X);
 		int py = int(Args->CurrentPoint->Position.Y);
-		MessageDialog Dialog("Hey did you just click on your mouse on " + px + " " +
+		/*MessageDialog Dialog("Hey did you just click on your mouse on " + px + " " +
 							 py + " ? No way!Awesome.", "Announcement!");
-		Dialog.ShowAsync();	
+		Dialog.ShowAsync();	*/
 	}
 
 	// On movement of the mouse pointer
-	void OnPointerMoved(CoreWindow^ Window, PointerEventArgs^ Args){}
+	void OnPointerMoved(CoreWindow^ Window, PointerEventArgs^ Args)
+	{
+		Input::SetMousePos(Args->CurrentPoint->Position.X, Args->CurrentPoint->Position.Y);
+	}
 
 	// On Scroll Wheel Action
 	void OnPointerWheelChanged(CoreWindow^ Window, PointerEventArgs^ Args)
@@ -128,13 +143,13 @@ public:
 		int Wheel = Args->CurrentPoint->Properties->MouseWheelDelta;
 		if (Wheel > 0)
 		{
-			MessageDialog Dialog("Wheel Up!", "Announcement!");
-			Dialog.ShowAsync();
+			/*MessageDialog Dialog("Wheel Up!", "Announcement!");
+			Dialog.ShowAsync();*/
 		}
 		else if(Wheel < 0)
 		{
-			MessageDialog Dialog("Wheel Down!", "Announcement!");
-			Dialog.ShowAsync();
+			/*MessageDialog Dialog("Wheel Down!", "Announcement!");
+			Dialog.ShowAsync();*/
 		}
 	}
 
