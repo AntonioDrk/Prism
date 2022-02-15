@@ -49,6 +49,7 @@ bool BasicGameEngine::Initialize()
 {
 	LogHelper logHelper;
 	logHelper.CreateFile().then([this](StorageFile^ file) {
+		DX::OutputDebug("LOG FILE: " + file->Path + "\n");
 		InitializeLogger(file->Path->Data());
 		
 		spdlog::get("main_file_logger")->info("Initializing Game Engine");
@@ -103,24 +104,33 @@ void BasicGameEngine::Update(float TotalTime, float DeltaTime)
 	if (m_Camera)
 	{
 		float moveSpeed = 2.0f * DeltaTime;
+		float rotAmount = 25.0f * DeltaTime;
 		XMFLOAT3 camPos = m_Camera->GetPosition();
+		XMFLOAT3 camRot = m_Camera->GetRotation();
 		if (Input::KeyDown(Windows::System::VirtualKey::A))
 		{
-			m_Camera->SetPosition(camPos.x - moveSpeed, camPos.y, camPos.z);
+			m_Camera->MoveLeft(moveSpeed);
 		}
+
 		if (Input::KeyDown(Windows::System::VirtualKey::D))
 		{
-			m_Camera->SetPosition(camPos.x + moveSpeed, camPos.y, camPos.z);
+			m_Camera->MoveRight(moveSpeed);
 		}
 		if (Input::KeyDown(Windows::System::VirtualKey::W))
 		{
-			m_Camera->SetPosition(camPos.x, camPos.y, camPos.z - moveSpeed);
+			m_Camera->MoveForward(moveSpeed);
 		}
 		if (Input::KeyDown(Windows::System::VirtualKey::S))
 		{
-			m_Camera->SetPosition(camPos.x, camPos.y, camPos.z + moveSpeed);
+			m_Camera->MoveBackward(moveSpeed);
 		}
-		DX::OutputDebug(camPos.x + "," + camPos.y + "," + camPos.z + "\n");
+		DX::OutputDebug("RMouseBtn: " + Input::GetMouseKeyDown(Input::MouseButton::RightMouseButton) + "\n");
+		if (Input::GetMouseKeyDown(Input::MouseButton::RightMouseButton))
+		{
+			XMFLOAT2 mDelta = Input::GetMouseDelta();
+			m_Camera->SetRotation(camRot.x + mDelta.y * rotAmount, camRot.y + mDelta.x * rotAmount, camRot.z);
+		}
+		//DX::OutputDebug(camPos.x + "," + camPos.y + "," + camPos.z + "\n");
 		DX::OutputDebug("Mouse pos: (" + Input::GetMousePos().x + "," + Input::GetMousePos().y + ")\n");
 	}
 }

@@ -10,10 +10,13 @@ CameraClass::CameraClass()
 	m_rotationX = 0.0f;
 	m_rotationY = 0.0f;
 	m_rotationZ = 0.0f;
+
+	m_forward = XMFLOAT3(0,0,-1);
 }
 
 CameraClass::CameraClass(const CameraClass& other){}
 CameraClass::~CameraClass() {}
+
 
 void CameraClass::SetPosition(float x, float y, float z)
 {
@@ -31,6 +34,28 @@ void CameraClass::SetRotation(float x, float y, float z)
 	return;
 }
 
+void CameraClass::MoveForward(float amount)
+{
+	XMFLOAT3 scaledFw = XMFLOAT3(m_forward.x * amount, m_forward.y * amount, m_forward.z * amount);
+	SetPosition(m_positionX - scaledFw.x, m_positionY - scaledFw.y, m_positionZ - scaledFw.z);
+}
+
+void CameraClass::MoveBackward(float amount)
+{
+	MoveForward(-amount);
+}
+
+void CameraClass::MoveRight(float amount)
+{
+	XMFLOAT3 scaledRight = XMFLOAT3(m_right.x * amount, m_right.y * amount, m_right.z * amount);
+	SetPosition(m_positionX + scaledRight.x, m_positionY + scaledRight.y, m_positionZ + scaledRight.z);
+}
+
+void CameraClass::MoveLeft(float amount)
+{
+	MoveRight(-amount);
+}
+
 XMFLOAT3 CameraClass::GetPosition()
 {
 	return XMFLOAT3(m_positionX, m_positionY, m_positionZ);
@@ -41,10 +66,11 @@ XMFLOAT3 CameraClass::GetRotation()
 	return XMFLOAT3(m_rotationX, m_rotationY, m_rotationZ);
 }
 
+
 void CameraClass::Render()
 {
-	XMFLOAT3 up, position, lookAt;
-	XMVECTOR upVector, positionVector, lookAtVector;
+	XMFLOAT3 up, position, lookAt, right;
+	XMVECTOR upVector, positionVector, lookAtVector, rightVector;
 	float yaw, pitch, roll;
 	XMMATRIX rotationMatrix;
 
@@ -72,6 +98,12 @@ void CameraClass::Render()
 	// Load it into a XMVECTOR structure.
 	lookAtVector = XMLoadFloat3(&lookAt);
 
+	right.x = 1.0f;
+	right.y = 0.0f;
+	right.z = 0.0f;
+
+	rightVector = XMLoadFloat3(&right);
+
 	// Set the yaw (Y axis), pitch (X axis), and roll (Z axis) rotations in radians.
 	pitch = m_rotationX * 0.0174532925f;
 	yaw = m_rotationY * 0.0174532925f;
@@ -83,6 +115,9 @@ void CameraClass::Render()
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	lookAtVector = XMVector3TransformCoord(lookAtVector, rotationMatrix);
 	upVector = XMVector3TransformCoord(upVector, rotationMatrix);
+	rightVector = XMVector3TransformCoord(rightVector, rotationMatrix);
+	XMStoreFloat3(&m_forward, lookAtVector);
+	XMStoreFloat3(&m_right, rightVector);
 
 	// Translate the rotated camera position to the location of the viewer.
 	lookAtVector = XMVectorAdd(positionVector, lookAtVector);

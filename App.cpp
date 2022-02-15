@@ -48,6 +48,7 @@ public:
 	{
 		// Bin relevant events of the main window
 		Window->PointerPressed += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerPressed);
+		Window->PointerReleased += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerReleased);
 		Window->PointerMoved += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerMoved);
 		Window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerWheelChanged);
 		Window->VisibilityChanged += ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &App::OnVisibilityChanged);
@@ -111,24 +112,18 @@ public:
 
 	void OnPointerPressed(CoreWindow^ Window, PointerEventArgs^ Args)
 	{
-		if (Args->CurrentPoint->Properties->IsLeftButtonPressed)
-		{
-			Input::SetMouseKeyDown(Input::MouseButton::LeftMouseButton);
-		}
-		if (Args->CurrentPoint->Properties->IsRightButtonPressed)
-		{
-			Input::SetMouseKeyDown(Input::MouseButton::RightMouseButton);
-		}
-		if (Args->CurrentPoint->Properties->IsMiddleButtonPressed)
-		{
-			Input::SetMouseKeyDown(Input::MouseButton::MiddleMouseButton);
-		}
+		Input::SaveMouseState(Args->CurrentPoint->Properties);
 		// Test code to see that the event is called
 		int px = int(Args->CurrentPoint->Position.X);
 		int py = int(Args->CurrentPoint->Position.Y);
 		/*MessageDialog Dialog("Hey did you just click on your mouse on " + px + " " +
 							 py + " ? No way!Awesome.", "Announcement!");
 		Dialog.ShowAsync();	*/
+	}
+
+	void OnPointerReleased(CoreWindow^ Window, PointerEventArgs^ Args)
+	{
+		Input::SaveMouseState(Args->CurrentPoint->Properties);
 	}
 
 	// On movement of the mouse pointer
