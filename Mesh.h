@@ -26,7 +26,7 @@ public:
 	bool LoadSimpleTriangleData();
 	bool LoadSimplePlaneData();
 	bool LoadSimpleCubeData();
-	bool LoadHumanFigure();
+	bool LoadShape();
 
 	int GetIndexCount();
 };

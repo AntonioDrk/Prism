@@ -161,7 +161,7 @@ bool Mesh::LoadSimpleCubeData()
 	return true;
 }
 
-bool Mesh::LoadHumanFigure()
+bool Mesh::LoadShape()
 {	
 	m_vertexCount = 20;
 	m_indexCount = 108;

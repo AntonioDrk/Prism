@@ -5,7 +5,7 @@ struct DirectionalLight
 	float4 diffuse;
 };
 
-cbuffer HemiConstants 
+cbuffer cbPerFrame
 {
 	DirectionalLight light;
 }
@@ -22,7 +22,7 @@ float4 main(PS_INPUT Input) : SV_TARGET
 	Input.Norm = normalize(Input.Norm);
 
 	float3 finalCol;
-	finalCol = light.ambient;
+	finalCol = Input.Color * light.ambient;
 	finalCol += saturate(dot(light.dir, Input.Norm) * light.diffuse * Input.Color);
 
 	return float4(finalCol, 1.0f);
