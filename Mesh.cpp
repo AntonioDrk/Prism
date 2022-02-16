@@ -1,5 +1,5 @@
-#include <iostream>
 #include "pch.h"
+#include <iostream>
 #include "spdlog/spdlog.h"
 
 using namespace Microsoft::WRL;
@@ -21,7 +21,7 @@ bool Mesh::LoadSimpleTriangleData()
 	m_vertexCount = 3;
 	m_indexCount = 3;
 
-	vertices = new VERTEX[m_vertexCount];
+	vertices = new MyLib::VERTEX[m_vertexCount];
 	indices = new unsigned short[m_indexCount];
 
 	if (!vertices || !indices)
@@ -58,7 +58,7 @@ bool Mesh::LoadSimplePlaneData()
 	m_vertexCount = 6;
 	m_indexCount = 6;
 
-	vertices = new VERTEX[m_vertexCount];
+	vertices = new MyLib::VERTEX[m_vertexCount];
 	indices = new unsigned short[m_indexCount];
 
 	if (!vertices || !indices)
@@ -110,19 +110,20 @@ bool Mesh::LoadSimpleCubeData()
 	m_vertexCount = 24;
 	m_indexCount = 36;
 
-	vertices = new VERTEX[m_vertexCount];
+	vertices = new MyLib::VERTEX[m_vertexCount];
 	indices = new unsigned short[m_indexCount];
 	float halfSize = 0.5;
-	VERTEX cubeData[] =
+	// POS, NORMAL, COL
+	MyLib::VERTEX cubeData[] =
 	{
-		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
-		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
-		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
-		{XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
-		{XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
-		{XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
-		{XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
+		{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
+		{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
+		{XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
+		{XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
+		{XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f),XMFLOAT3(1.0f, 1.0f, 1.0f)},
 	};
 	
 	std::copy(std::begin(cubeData), std::end(cubeData), vertices);
@@ -156,9 +157,150 @@ bool Mesh::LoadSimpleCubeData()
 	{
 		return false;
 	}
-
+	CalcNormals();
 	return true;
 }
+
+bool Mesh::LoadHumanFigure()
+{	
+	m_vertexCount = 20;
+	m_indexCount = 108;
+
+	vertices = new MyLib::VERTEX[m_vertexCount];
+	indices = new unsigned short[m_indexCount];
+
+	// POS, NORMAL, COL
+	MyLib::VERTEX meshData[] =
+	{
+		{XMFLOAT3(-0.57735f,  -0.57735f,  0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.934172f,  0.356822f,  0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.934172f,  -0.356822f,  0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.934172f,  0.356822f,  0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.934172f,  -0.356822f,  0.0f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.0f,  0.934172f,  0.356822f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.0f,  0.934172f,  -0.356822f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.356822f,  0.0f,  -0.934172f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.356822f,  0.0f,  -0.934172f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.0f,  -0.934172f,  -0.356822f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.0f,  -0.934172f,  0.356822f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.356822f,  0.0f,  0.934172f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.356822f,  0.0f,  0.934172f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.57735f,  0.57735f,  -0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.57735f,  0.57735f,  0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.57735f,  0.57735f,  -0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.57735f,  0.57735f,  0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.57735f,  -0.57735f,  -0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(0.57735f,  -0.57735f,  0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+		{XMFLOAT3(-0.57735f,  -0.57735f,  -0.57735f),XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.15f, 0.7f, 0.7f)},
+	};
+
+	std::copy(std::begin(meshData), std::end(meshData), vertices);
+	//delete[] cubeData;
+
+	unsigned long meshIndices[] =
+	{
+		19,  3,  2,
+		12,  19,  2,
+		15,  12,  2,
+		8,  14,  2,
+		18,  8,  2,
+		3,  18,  2,
+		20,  5,  4,
+		9,  20,  4,
+		16,  9,  4,
+		13,  17,  4,
+		1,  13,  4,
+		5,  1,  4,
+		7,  16,  4,
+		6,  7,  4,
+		17,  6,  4,
+		6,  15,  2,
+		7,  6,  2,
+		14,  7,  2,
+		10,  18,  3,
+		11,  10,  3,
+		19,  11,  3,
+		11,  1,  5,
+		10,  11,  5,
+		20,  10,  5,
+		20,  9,  8,
+		10,  20,  8,
+		18,  10,  8,
+		9,  16,  7,
+		8,  9,  7,
+		14,  8,  7,
+		12,  15,  6,
+		13,  12,  6,
+		17,  13,  6,
+		13,  1,  11,
+		12,  13,  11,
+		19,  12,  11
+	};
+
+	std::copy(std::begin(meshIndices), std::end(meshIndices), indices);
+	//delete[] cubeIndices;
+
+	if (!vertices || !indices)
+	{
+		return false;
+	}
+	CalcNormals();
+	return true;
+}
+
+void Mesh::CalcNormals()
+{
+	// Take each triangle
+	for (int i = 0; i < m_indexCount; i += 3)
+	{
+		XMVECTOR p1 = XMLoadFloat3(&vertices[indices[i]].position);
+		XMVECTOR p2 = XMLoadFloat3(&vertices[indices[i + 1]].position);
+		XMVECTOR p3 = XMLoadFloat3(&vertices[indices[i + 2]].position);
+		XMVECTOR U = p2 - p1;
+		XMVECTOR V = p3 - p1;
+
+		XMVECTOR N = XMVector3Cross(U, V);
+		N = XMVector3Normalize(N);
+
+		// Vert 1
+		if (MyLib::IsXMFloat3Equal(vertices[indices[i]].normal,XMFLOAT3(0, 0, 0)))
+		{
+			XMStoreFloat3(&(vertices[indices[i]].normal), N);
+		}
+		else
+		{
+			XMVECTOR NVert = XMLoadFloat3(&vertices[indices[i]].normal);
+			NVert = XMVector3Normalize(N + NVert);
+			XMStoreFloat3(&(vertices[indices[i]].normal), NVert);
+		}
+
+		// Vert 2
+		if (MyLib::IsXMFloat3Equal(vertices[indices[i + 1]].normal, XMFLOAT3(0, 0, 0)))
+		{
+			XMStoreFloat3(&(vertices[indices[i + 1]].normal), N);
+		}
+		else
+		{
+			XMVECTOR NVert = XMLoadFloat3(&vertices[indices[i + 1]].normal);
+			NVert = XMVector3Normalize(N + NVert);
+			XMStoreFloat3(&(vertices[indices[i + 1]].normal), NVert);
+		}
+
+		// Vert 3
+		if (MyLib::IsXMFloat3Equal(vertices[indices[i + 2]].normal, XMFLOAT3(0, 0, 0)))
+		{
+			XMStoreFloat3(&(vertices[indices[i + 2]].normal), N);
+		}
+		else
+		{
+			XMVECTOR NVert = XMLoadFloat3(&vertices[indices[i + 2]].normal);
+			NVert = XMVector3Normalize(N + NVert);
+			XMStoreFloat3(&(vertices[indices[i + 2]].normal), NVert);
+		}
+	}
+}
+
+
 
 /// <summary>
 /// Initializes the d3d vertex and index buffers
@@ -179,9 +321,9 @@ bool Mesh::Initialize(__int64 devAdress)
 	D3D11_SUBRESOURCE_DATA srd_vertices = { vertices, 0, 0 };
 	
 	
-	bd_vertices.ByteWidth = sizeof(VERTEX) * m_vertexCount;
+	bd_vertices.ByteWidth = sizeof(MyLib::VERTEX) * m_vertexCount;
 	bd_vertices.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd_indices.StructureByteStride = sizeof(VERTEX);
+	bd_vertices.StructureByteStride = sizeof(MyLib::VERTEX);
 
 	result = dev->CreateBuffer(&bd_vertices, &srd_vertices, &m_vertexBuffer);
 	if (FAILED(result))
@@ -239,7 +381,7 @@ void Mesh::Render(__int64 devConAdress)
 	unsigned int stride;
 	unsigned int offset;
 	
-	stride = sizeof(VERTEX);
+	stride = sizeof(MyLib::VERTEX);
 	offset = 0;
 	
 	// Set the vertex buffer to active in the input assembler so it can be rendered

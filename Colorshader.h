@@ -16,8 +16,8 @@ private:
 	struct MatrixBufferType
 	{
 		XMMATRIX MVP;
+		XMMATRIX World;
 	};
-
 public:
 	ColorShaderClass();
 	ColorShaderClass(const ColorShaderClass&);

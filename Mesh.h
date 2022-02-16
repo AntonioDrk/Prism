@@ -1,6 +1,4 @@
 #pragma once
-#ifndef MESH_HEADER_GUARD
-#define MESH_HEADER_GUARD
 #include "MyHelperData.h"
 #include <iostream>
 /// <summary>
@@ -13,9 +11,11 @@ ref class Mesh
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
-	VERTEX *vertices;
+	MyLib::VERTEX *vertices;
 	unsigned short* indices;
 	uint32 m_vertexCount, m_indexCount;
+	
+	void CalcNormals();
 
 public:	
 	bool Initialize(__int64 ID3D11Device1);
@@ -26,7 +26,7 @@ public:
 	bool LoadSimpleTriangleData();
 	bool LoadSimplePlaneData();
 	bool LoadSimpleCubeData();
+	bool LoadHumanFigure();
 
 	int GetIndexCount();
 };
-#endif

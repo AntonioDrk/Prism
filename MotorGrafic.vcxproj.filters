@@ -63,6 +63,10 @@
     <ClCompile Include="Input.cpp">
       <Filter>lib\input</Filter>
     </ClCompile>
+    <ClCompile Include="MyHelperData.cpp" />
+    <ClCompile Include="PointLight.cpp">
+      <Filter>MyComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -83,6 +87,12 @@
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>lib\input</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>MyComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>MyComponents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

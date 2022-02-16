@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MyHelperData.h"
 #include "D3dclass.h"
 #include "Mesh.h"
 #include "CameraClass.h"
@@ -38,6 +37,7 @@ private:
 
 	CameraClass* m_Camera;
 	ColorShaderClass* m_ColorShader;
+	ID3D11Buffer* m_cbPerFrameBuffer;
 
 	unsigned int vertexCount;
 	__int64 devContextPtrAdress;

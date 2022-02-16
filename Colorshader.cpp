@@ -52,9 +52,9 @@ bool ColorShaderClass::Render(ID3D11DeviceContext1* devContext, int indexCount, 
 bool ColorShaderClass::InitializeShader(ID3D11Device1* device, WCHAR* vsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC matrixBufferDesc, ambientBufferDesc;
 
 	auto VSFile = LoadShaderFile("VertexShader.cso");
 	auto PSFile = LoadShaderFile("PixelShader.cso");
@@ -87,13 +87,21 @@ bool ColorShaderClass::InitializeShader(ID3D11Device1* device, WCHAR* vsFilename
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
-	polygonLayout[1].SemanticName = "COLOR";
+	polygonLayout[1].SemanticName = "NORMAL";
 	polygonLayout[1].SemanticIndex = 0;
 	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
 	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
+
+	polygonLayout[2].SemanticName = "COLOR";
+	polygonLayout[2].SemanticIndex = 0;
+	polygonLayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[2].InputSlot = 0;
+	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[2].InstanceDataStepRate = 0;
 
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -115,6 +123,8 @@ bool ColorShaderClass::InitializeShader(ID3D11Device1* device, WCHAR* vsFilename
 	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
+
+
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	result = device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer);
@@ -186,8 +196,8 @@ bool ColorShaderClass::SetShaderParameteres(ID3D11DeviceContext1* devContext, XM
 
 	// Copy the matrices into the constant buffer.
 	//dataPtr->MVP = MVP;
-	memcpy(mappedResource.pData, &MVP, sizeof(MVP));
-	
+	memcpy(&dataPtr->MVP, &MVP, sizeof(MVP));
+	memcpy(&dataPtr->World, &worldMatrix, sizeof(worldMatrix));
 	/*dataPtr->world = worldMatrix;
 	dataPtr->view = viewMatrix;
 	dataPtr->projection = projectionMatrix;*/

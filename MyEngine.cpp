@@ -10,8 +10,10 @@ using namespace Platform;
 using namespace DirectX;
 
 #include "FileHandling.cpp"
+#include "MyHelperData.h"
 #include "MyEngine.h"
 #include "Input.h"
+#include "DirectionalLight.h"
 
 BasicGameEngine::BasicGameEngine()
 {
@@ -85,6 +87,10 @@ void BasicGameEngine::InitGraphics()
 		{
 			spdlog::get("main_file_logger")->error("Could not initialize mesh 0 with success");
 		}
+
+		directionalLight.dir = XMFLOAT3(0.25f, 0.5f, -1.0f);
+		directionalLight.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		directionalLight.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		/*Meshes->GetAt(1)->LoadSimpleTriangleData();
 		rez = Meshes->GetAt(1)->Initialize(devPtrAdress);
 		if (!rez)
@@ -155,23 +161,12 @@ bool BasicGameEngine::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	d3dClass.GetProjectionMatrix(projectionMatrix);
 
-	// clear the back buffer to a solid color
-	//float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
-	//devcon->ClearRenderTargetView(renderTarget.Get(), color);
-
-	//// Set the vertex buffer
-	//UINT stride = sizeof(VERTEX);
-	//UINT offset = 0;
-	//devcon->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
-
-	//// Set the primitive type of topology
-	//devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// Render all the stored objects
 	for (unsigned int i = 0; i < Meshes->Size; i++)
 	{
 		Meshes->GetAt(i)->Render(devContextPtrAdress);
 		// Render the model using the color shader.
-		result = m_ColorShader->Render(d3dClass.GetDeviceContext(), Meshes->GetAt(i)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		result = m_ColorShader->Render(d3dClass.GetDeviceContext(), Meshes->GetAt(i)->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);		
 		if (!result)
 		{
 			return false;
@@ -179,6 +174,10 @@ bool BasicGameEngine::Render()
 		// draw verticies, starting from vertex 0
 		//d3dClass.GetDeviceContext()->Draw(Meshes->GetAt(i)->GetIndexCount(), 0);
 	}
+
+	constbuffPerFrame.directionalLight = directionalLight;
+	d3dClass.GetDeviceContext()->UpdateSubresource(m_cbPerFrameBuffer, 0, NULL, &constbuffPerFrame, 0, 0);
+	d3dClass.GetDeviceContext()->PSSetConstantBuffers(0, 1, &m_cbPerFrameBuffer);
 
 	d3dClass.EndScene();
 	return true;
@@ -214,6 +213,17 @@ void BasicGameEngine::InitPipeline()
 		MessageDialog Dialog("Could not initialize the color shader object.");
 		Dialog.ShowAsync();
 	}
+	D3D11_BUFFER_DESC cbbd;
+	ZeroMemory(&cbbd, sizeof(D3D11_BUFFER_DESC));
+
+	cbbd.Usage = D3D11_USAGE_DEFAULT;
+	cbbd.ByteWidth = sizeof(cbPerFrame);
+	cbbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbbd.CPUAccessFlags = 0;
+	cbbd.MiscFlags = 0;
+
+	result = d3dClass.GetDevice()->CreateBuffer(&cbbd, NULL, &m_cbPerFrameBuffer);
+
 	//// load the shader files
 	//// .hlsl files become .cso files after compilation
 	//Array<byte>^ VSFile = LoadShaderFile("VertexShader.cso");

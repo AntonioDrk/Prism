@@ -1,11 +1,17 @@
 #pragma once
-#ifndef MYHELPER_GUARD
-#define MYHELPER_GUARD
-struct VERTEX
+
+namespace MyLib
 {
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 color;
-};
+	struct VERTEX
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT3 color;
+	};
+
+	bool IsXMFloat3Equal(DirectX::XMFLOAT3 left, DirectX::XMFLOAT3 right);
+}
+
 
 //struct MyMeshEqual : public std::binary_function<const Mesh, const Mesh, bool>
 //{
@@ -14,4 +20,3 @@ struct VERTEX
 //		return (_Left.GetVertexBuffer() == _Right.GetVertexBuffer() && _Left.GetIndexBuffer() == _Right.GetIndexBuffer());
 //	};
 //};
-#endif

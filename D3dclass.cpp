@@ -399,7 +399,7 @@ void D3DClass::EndScene()
 	else
 	{
 		// Present as fast as possible.
-		m_swapChain->Present(1, 0);
+		m_swapChain->Present(0, 0);
 	}
 }
 
